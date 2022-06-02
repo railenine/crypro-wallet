@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { Container } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import { BrowserRouter as Router } from "react-router-dom";
+
+import TopBar from './components/topBar/TopBar';
+import Routes from "./Routes";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    fontFamily: 'Roboto'
+  },
+}));
 
 function App() {
+  
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.root}>
+      <Container maxWidth='lg'>
+        <Router>
+          <TopBar />
+          <Routes />
+        </Router>
+      </Container>
     </div>
   );
 }
