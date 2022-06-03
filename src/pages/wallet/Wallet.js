@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { CircularProgress, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Fab from '@material-ui/core/Fab';
@@ -10,85 +10,63 @@ import axios from 'axios';
 
 import FrappeChartDon from './FrappeChartDon';
 import useStyles from '../../hooks/useStyles';
+import Loading from '../../components/loading/Loading';
 
 const Wallet = () => {
   
   const classes = useStyles();
 
-  const [crypto, setCrypto] = useState([]);
+  const [crypto, setCrypto] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [btc, setBtc] = useState('');
+  const [eth, setEth] = useState('');
 
   useEffect(() => {
     axios('http://localhost:3001/values')
-      .then(res => {
-        setCrypto(res.data)
-        setLoading(true)
-      })
+      .then(res => setCrypto(res.data))
       .catch(err => console.log(err))
+
+    setLoading(true)
   }, [])
 
-  //const changeSum = (type, i) => {
-  //  switch (type) {
-  //    case 'BTC': 
-  //      return setBtc(+btc + +i)
-  //    case 'ETH':
-  //      return setEth(+eth + +i)
-  //    default:
-  //      return
-  //  }
-  //}
+  useEffect(() => {
+    if (!crypto) {
+        return
+    }
 
-  console.log(crypto[0])
+    setBtc(crypto[0].account)
+    setEth(crypto[1].account)
+}, [crypto])
+
+  const changeSum = (type, i) => {
+    switch (type) {
+      case "BTC": 
+        return setBtc(+btc + i)
+      case "ETH": 
+        return setEth(+eth + i)
+      default:
+        return
+    }
+  }
 
   const handleSubmitSum = (e) => {
     e.preventDefault();
-  }
 
-  if (!loading) {
-    return <CircularProgress />
-  }
-
-  const renderProfile = (arr) => {
-    if (arr.length === 0) {
-        return (
-            <div classNames={classes.profile}>
-                <h5 className={classes.profile}>You can add acoount</h5>
-            </div>
-        )
+    if (e.target.innerText === "BTC") {
+      axios.put('http://localhost:3001/values/1', {
+          id: 1,
+          name: "BTC",
+          account: btc
+        })
+    } else if (e.target.innerText === "ETH") {
+      axios.put('http://localhost:3001/values/2', {
+          id: 2,
+          name: "ETH",
+          account: eth
+        })
     }
-
-    return arr.map(({id, name, account}) => {
-        return (
-            <form className={classes.form} onSubmit={handleSubmitSum} key={id}>
-              <Fab 
-                className={classes.btn}    
-                size="small"
-                //onClick={() => changeSum('BTC', -1)}
-              >
-                <ExpandMoreIcon />
-              </Fab>
-              <TextField 
-                variant="outlined" 
-                label={name}
-                size="small" 
-                className={classes.input}
-                value={account}   
-              />
-              <Fab 
-                className={classes.btn} 
-                size="small"
-                //onClick={() => changeSum('BTC', +1)}
-              >
-                <ExpandLessIcon />
-              </Fab>
-            </form>
-        )
-    })
+    
   }
-
-  const check = renderProfile(crypto);
-
-  
 
   return (
     <div className={classes.root}>
@@ -107,7 +85,7 @@ const Wallet = () => {
               </h2>
               <div className={classes.graph}>
                   
-                  {/*<FrappeChartDon btc={btc} eth={eth} />*/}
+                  <FrappeChartDon btc={btc} eth={eth} />
               </div>
           </Paper>
         </Grid>
@@ -116,12 +94,13 @@ const Wallet = () => {
               <h2>
                   Your profile
               </h2>
-              {check}
-              <form className={classes.form} onSubmit={handleSubmitSum}>
+              {!loading ? <Loading/> : (
+                <Fragment>
+                  <form className={classes.form} onSubmit={handleSubmitSum}>
                   <Fab 
                       className={classes.btnOne}    
                       size="small"
-                      //onClick={() => changeSum('BTC', -1)}
+                      onClick={() => changeSum('BTC', -1)}
                   >
                       <ExpandMoreIcon />
                   </Fab>
@@ -130,12 +109,13 @@ const Wallet = () => {
                       label="BTC"
                       size="small" 
                       className={classes.input}
-                      
+                      value={btc}
+                      onChange={e => setBtc(e.target.value)}
                   />
                   <Fab 
                       className={classes.btnOne} 
                       size="small"
-                      //onClick={() => changeSum('BTC', +1)}
+                      onClick={() => changeSum('BTC', +1)}
                   >
                       <ExpandLessIcon />
                   </Fab>
@@ -144,7 +124,7 @@ const Wallet = () => {
                   <Fab 
                       className={classes.btnTwo} 
                       size="small"
-                      //onClick={() => changeSum('ETH', -1)}
+                      onClick={() => changeSum('ETH', -1)}
                   >
                       <ExpandMoreIcon />
                   </Fab>
@@ -152,18 +132,22 @@ const Wallet = () => {
                       variant="outlined" 
                       label="ETH" size="small" 
                       className={classes.input}
-                      //value={eth}
+                      value={eth}
+                      onChange={e => setEth(e.target.value)}
                   />
                   <Fab 
                       className={classes.btnTwo} 
                       size="small"
-                      //onClick={() => changeSum('ETH', +1)}
+                      onClick={() => changeSum('ETH', +1)}
                   >
                       <ExpandLessIcon />
                   </Fab>
               </form>
+                </Fragment>
+              )}
+              
               <Fab 
-                  className={classes.btnPlus} 
+                  className={classes.btnTree} 
                   size="small"
               >
                   <AddIcon />

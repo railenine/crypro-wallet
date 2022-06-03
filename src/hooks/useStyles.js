@@ -18,12 +18,17 @@ const useStyles = makeStyles((theme) => ({
     form: {
       padding: theme.spacing(1),
     },
-    btn: {
-      background: 'linear-gradient(320deg, #d1c4e9 10%, #f3e5f5 90%)',
+    btnOne: {
+      background: 'linear-gradient(320deg, #546e7a 10%, #cfd8dc 90%)',
       color: 'white',
       margin: '0 10px'
     },
-    btnPlus: {
+    btnTwo: {
+      background: 'linear-gradient(320deg, #3949AB 10%, #4fc3f7 90%)',
+      color: 'white',
+      margin: '0 10px'
+    },
+    btnTree: {
       background: 'linear-gradient(320deg, #d1c4e9 10%, #f3e5f5 90%)',
       color: 'white',
       margin: '0 10px',
@@ -37,14 +42,10 @@ const useStyles = makeStyles((theme) => ({
         width: '300px',
         height: '300px',
         marginBottom: '19px'
+    },
+    load: {
+      margin: '44px auto'
     }
   }));
 
   export default useStyles;
-
-//  'linear-gradient(320deg, #546e7a 10%, #cfd8dc 90%)'
-//  btnTwo: {
-//    background: 'linear-gradient(320deg, #3949AB 10%, #4fc3f7 90%)',
-//    color: 'white',
-//    margin: '0 10px'
-//  },
