@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { TextField } from '@material-ui/core';
+import { CircularProgress, TextField } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Fab from '@material-ui/core/Fab';
@@ -20,13 +20,25 @@ const Wallet = () => {
   const [loading, setLoading] = useState(false);
   const [btc, setBtc] = useState('');
   const [eth, setEth] = useState('');
+  const [fetchLoading, setFetchLoading] = useState(false);
+  const [valueBtc, setValueBtc] = useState();
+  const [valueEth, setValueEth] = useState();
 
   useEffect(() => {
     axios('http://localhost:3001/values')
-      .then(res => setCrypto(res.data))
+      .then(res => {
+        setCrypto(res.data)
+        setLoading(true)
+      })
       .catch(err => console.log(err))
-
-    setLoading(true)
+    
+    axios('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd')
+      .then(res => {
+        setValueBtc(res.data.bitcoin.usd)
+        setValueEth(res.data.ethereum.usd)
+        setFetchLoading(true)
+      })
+      .catch(err => console.log(err))
   }, [])
 
   useEffect(() => {
@@ -73,9 +85,14 @@ const Wallet = () => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper className={classes.account} elevation={0}>
-              <h1>
-                  Your all account
-              </h1>
+              {!fetchLoading && <CircularProgress />}
+              {fetchLoading && (
+                <Fragment>
+                  <h1>
+                    Your wallet: {btc && eth ? ((valueBtc * btc) + (valueEth * eth)).toFixed(2) : <CircularProgress />} USD
+                  </h1>
+                </Fragment>
+              )}
           </Paper>
         </Grid>
         <Grid item xs={12} lg={7}>
@@ -147,7 +164,7 @@ const Wallet = () => {
               )}
               
               <Fab 
-                  className={classes.btnTree} 
+                  className={classes.btnThree} 
                   size="small"
               >
                   <AddIcon />

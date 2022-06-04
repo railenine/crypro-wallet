@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
       color: 'white',
       margin: '0 10px'
     },
-    btnTree: {
+    btnThree: {
       background: 'linear-gradient(320deg, #d1c4e9 10%, #f3e5f5 90%)',
       color: 'white',
       margin: '0 10px',
@@ -44,7 +44,11 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '19px'
     },
     load: {
-      margin: '44px auto'
+      margin: '44px auto',
+    },
+    inputConv: {
+      maxWidth: '200px',
+      marginBottom: theme.spacing(2)
     }
   }));
 
