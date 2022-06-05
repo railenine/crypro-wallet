@@ -5,9 +5,7 @@ import { CircularProgress, TextField } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
-import { debounce } from 'lodash';
 
 import FrappeChartDon from './FrappeChartDon';
 import useStyles from '../../hooks/useStyles';
