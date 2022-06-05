@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/crypro-wallet/static/js/main.fb62be58.js",
+    "index.html": "/crypro-wallet/index.html",
+    "main.fb62be58.js.map": "/crypro-wallet/static/js/main.fb62be58.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.fb62be58.js"
+  ]
+}
