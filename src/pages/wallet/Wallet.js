@@ -147,13 +147,6 @@ const Wallet = () => {
               </form>
                 </Fragment>
               )}
-              
-              <Fab 
-                  className={classes.btnThree} 
-                  size="small"
-              >
-                  <AddIcon />
-              </Fab>
           </Paper>
         </Grid>
       </Grid>

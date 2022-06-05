@@ -26,13 +26,8 @@ const useStyles = makeStyles((theme) => ({
     btnTwo: {
       background: 'linear-gradient(320deg, #3949AB 10%, #4fc3f7 90%)',
       color: 'white',
-      margin: '0 10px'
-    },
-    btnThree: {
-      background: 'linear-gradient(320deg, #d1c4e9 10%, #f3e5f5 90%)',
-      color: 'white',
       margin: '0 10px',
-      marginBottom: '167px'
+      marginBottom: '207px'
     },
     input: {
       maxWidth: '100px',
