@@ -7,6 +7,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
+import { debounce } from 'lodash';
 
 import FrappeChartDon from './FrappeChartDon';
 import useStyles from '../../hooks/useStyles';
@@ -18,8 +19,8 @@ const Wallet = () => {
 
   const [crypto, setCrypto] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [btc, setBtc] = useState('');
-  const [eth, setEth] = useState('');
+  const [currencies, setCurrencies] = useState({btc: '', eth: ''});
+  const [currenciesIds, setCurrenciesIds] = useState({btc: '', eth: ''});
   const [fetchLoading, setFetchLoading] = useState(false);
   const [valueBtc, setValueBtc] = useState();
   const [valueEth, setValueEth] = useState();
@@ -46,38 +47,19 @@ const Wallet = () => {
         return
     }
 
-    setBtc(crypto[0].account)
-    setEth(crypto[1].account)
+    setCurrencies({btc: parseFloat(crypto[0].account), eth: parseFloat(crypto[1].account)})
+    setCurrenciesIds({btc: crypto[0].id, eth: crypto[1].id})
 }, [crypto])
 
-  const changeSum = (type, i) => {
-    switch (type) {
-      case "BTC": 
-        return setBtc(+btc + i)
-      case "ETH": 
-        return setEth(+eth + i)
-      default:
-        return
-    }
-  }
+  
 
-  const handleSubmitSum = (e) => {
-    e.preventDefault();
-
-    if (e.target.innerText === "BTC") {
-      axios.put('http://localhost:3001/values/1', {
-          id: 1,
-          name: "BTC",
-          account: btc
-        })
-    } else if (e.target.innerText === "ETH") {
-      axios.put('http://localhost:3001/values/2', {
-          id: 2,
-          name: "ETH",
-          account: eth
-        })
-    }
+  const onChange = (type, i) => {
+    setCurrencies(prevState => ({...prevState, [type]: parseFloat(i)}))
     
+    axios.put(`http://localhost:3001/values/${currenciesIds[type]}`, {
+        id: currenciesIds[type],
+        account: parseFloat(i)
+      })
   }
 
   return (
@@ -89,7 +71,7 @@ const Wallet = () => {
               {fetchLoading && (
                 <Fragment>
                   <h1>
-                    Your wallet: {btc && eth ? ((valueBtc * btc) + (valueEth * eth)).toFixed(2) : <CircularProgress />} USD
+                    Your wallet: {currencies.btc && currencies.eth ? ((valueBtc * currencies.btc) + (valueEth * currencies.eth)).toFixed(2) : <CircularProgress />} USD
                   </h1>
                 </Fragment>
               )}
@@ -102,7 +84,7 @@ const Wallet = () => {
               </h2>
               <div className={classes.graph}>
                   
-                  <FrappeChartDon btc={btc} eth={eth} />
+                  {loading ? <FrappeChartDon btc={currencies.btc} eth={currencies.eth} /> : <Loading />}
               </div>
           </Paper>
         </Grid>
@@ -113,49 +95,52 @@ const Wallet = () => {
               </h2>
               {!loading ? <Loading/> : (
                 <Fragment>
-                  <form className={classes.form} onSubmit={handleSubmitSum}>
+                  <form className={classes.form}>
                   <Fab 
                       className={classes.btnOne}    
                       size="small"
-                      onClick={() => changeSum('BTC', -1)}
+                      onClick={() => onChange('btc', currencies.btc - 1)}
                   >
                       <ExpandMoreIcon />
                   </Fab>
                   <TextField 
                       variant="outlined" 
                       label="BTC"
+                      type="number"
                       size="small" 
                       className={classes.input}
-                      value={btc}
-                      onChange={e => setBtc(e.target.value)}
+                      value={currencies.btc}
+                      onChange={e => onChange('btc', e.target.value)}
                   />
                   <Fab 
                       className={classes.btnOne} 
                       size="small"
-                      onClick={() => changeSum('BTC', +1)}
+                      onClick={() => onChange('btc', currencies.btc + 1)}
                   >
                       <ExpandLessIcon />
                   </Fab>
               </form>
-              <form className={classes.form} onSubmit={handleSubmitSum}>
+              <form className={classes.form}>
                   <Fab 
                       className={classes.btnTwo} 
                       size="small"
-                      onClick={() => changeSum('ETH', -1)}
+                      onClick={() => onChange('eth', currencies.eth - 1)}
                   >
                       <ExpandMoreIcon />
                   </Fab>
                   <TextField 
                       variant="outlined" 
-                      label="ETH" size="small" 
+                      label="ETH" 
+                      size="small"
+                      type="number" 
                       className={classes.input}
-                      value={eth}
-                      onChange={e => setEth(e.target.value)}
+                      value={currencies.eth}
+                      onChange={e => onChange('eth', e.target.value)}
                   />
                   <Fab 
                       className={classes.btnTwo} 
                       size="small"
-                      onClick={() => changeSum('ETH', +1)}
+                      onClick={() => onChange('eth', currencies.eth + 1)}
                   >
                       <ExpandLessIcon />
                   </Fab>

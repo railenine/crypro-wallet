@@ -2,13 +2,11 @@
   "values": [
     {
       "id": 1,
-      "name": "BTC",
-      "account": "2"
+      "account": 18
     },
     {
       "id": 2,
-      "name": "ETH",
-      "account": "8"
+      "account": 22
     }
   ]
 }
